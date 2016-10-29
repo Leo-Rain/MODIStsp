@@ -33,12 +33,12 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
   #  Start Building the GUI
   #- ------------------------------------------------------------------------------- -#
   
-  main_win <- gbasicdialog(title = "Select Main Processing Options", parent = NULL, do.buttons = TRUE, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
-    general_opts <- prepare_to_save_options(general_opts, GUI.env)
-    if (GUI.env$check_save_opts) {					# If check passed, save previous file and return
-      write(RJSONIO::toJSON(general_opts),previous_jsfile)
-      GUI.env$Quit <- FALSE
-    }
+   main_win <- gbasicdialog(title = "Select Main Processing Options", parent = NULL, do.buttons = FALSE, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
+  #   general_opts <- prepare_to_save_options(general_opts, GUI.env)
+  #   if (GUI.env$check_save_opts) {					# If check passed, save previous file and return
+  #     write(RJSONIO::toJSON(general_opts),previous_jsfile)
+  #     GUI.env$Quit <- FALSE
+  #   }
   })
   
   main_frame1 <- ggroup(container = main_win, horizontal = TRUE, expand = FALSE, use.scrollwindow=scrollWindow)
@@ -196,27 +196,27 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
                         general_opts <- RJSONIO::fromJSON(previous_jsfile)
                         check_names <- prod_opt_list[[svalue(prod_wid)]][[svalue(vers_wid)]]$band_fullnames					# retrieve band names of sel. product
                         check_wid <- GUI.env$temp_wid_bands												# retrieve currently selected original layers
-                        selgroup <- gbasicdialog(title = paste0("Select Processing Layers -  ",svalue(prod_wid)," vers. ",svalue(vers_wid)), parent = NULL, do.buttons = TRUE, horizontal = FALSE, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
-                          pos_wid <- which(check_names %in% svalue(bands_wid))   # ? which layers selected ? --> store in GUI.env$temp_wid_bands array
-                          tmp_arr_bands <- array(data = 0 , dim = length(check_names))
-                          tmp_arr_bands[pos_wid] <- 1
-                          GUI.env$temp_wid_bands <- tmp_arr_bands
-                          if (length(which(check_names_indexes != "") > 0)) {    # ? which indexes selected ? --> store in GUI.env$temp_wid_bands_indexes array
-                            pos_wid <- which(check_names_indexes %in% svalue(bands_wid_indexes))
-                            tmp_arr_ind <- array(data = 0 , dim = length(check_names_indexes))
-                            tmp_arr_ind[pos_wid] <- 1
-                            GUI.env$temp_wid_bands_indexes <- tmp_arr_ind
-                          }
-                          if (length(which(check_names_quality != "") > 0)) {    # ? which quality selected ? --> store in GUI.env$temp_wid_bands_quality array
-                            pos_wid <- which(check_names_quality %in% svalue(bands_wid_quality))
-                            tmp_arr_qual <- array(data = 0 , dim = length(check_names_quality))
-                            tmp_arr_qual[pos_wid] <- 1
-                            GUI.env$temp_wid_bands_quality <- tmp_arr_qual
-                            
-                          }
-                          
-                          # dispose(selgroup)			 # close layers selection child widget
-                          })
+                         selgroup <- gbasicdialog(title = paste0("Select Processing Layers -  ",svalue(prod_wid)," vers. ",svalue(vers_wid)), parent = NULL, do.buttons = FALSE, horizontal = FALSE, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
+                        #   pos_wid <- which(check_names %in% svalue(bands_wid))   # ? which layers selected ? --> store in GUI.env$temp_wid_bands array
+                        #   tmp_arr_bands <- array(data = 0 , dim = length(check_names))
+                        #   tmp_arr_bands[pos_wid] <- 1
+                        #   GUI.env$temp_wid_bands <- tmp_arr_bands
+                        #   if (length(which(check_names_indexes != "") > 0)) {    # ? which indexes selected ? --> store in GUI.env$temp_wid_bands_indexes array
+                        #     pos_wid <- which(check_names_indexes %in% svalue(bands_wid_indexes))
+                        #     tmp_arr_ind <- array(data = 0 , dim = length(check_names_indexes))
+                        #     tmp_arr_ind[pos_wid] <- 1
+                        #     GUI.env$temp_wid_bands_indexes <- tmp_arr_ind
+                        #   }
+                        #   if (length(which(check_names_quality != "") > 0)) {    # ? which quality selected ? --> store in GUI.env$temp_wid_bands_quality array
+                        #     pos_wid <- which(check_names_quality %in% svalue(bands_wid_quality))
+                        #     tmp_arr_qual <- array(data = 0 , dim = length(check_names_quality))
+                        #     tmp_arr_qual[pos_wid] <- 1
+                        #     GUI.env$temp_wid_bands_quality <- tmp_arr_qual
+                        #     
+                        #   }
+                        #   
+                        #   # dispose(selgroup)			 # close layers selection child widget
+                           })
                         
                         # widgets for band selection - original ----
                         cbox_main <- ggroup(container = selgroup, horizontal = FALSE)
@@ -270,43 +270,43 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
                         
                         # Start/Cancel widgets ----
                         bands_group <- ggroup(container = cbox_main, horizontal = FALSE)
-                        # accept_but <- gbutton(text = "Accept", container = bands_group, handler = function(button,...){ # On accept, retrieve and save selected layers
-                        #   
-                        #   pos_wid <- which(check_names %in% svalue(bands_wid))   # ? which layers selected ? --> store in GUI.env$temp_wid_bands array
-                        #   tmp_arr_bands <- array(data = 0 , dim = length(check_names))
-                        #   tmp_arr_bands[pos_wid] <- 1
-                        #   GUI.env$temp_wid_bands <- tmp_arr_bands
-                        #   if (length(which(check_names_indexes != "") > 0)) {    # ? which indexes selected ? --> store in GUI.env$temp_wid_bands_indexes array
-                        #     pos_wid <- which(check_names_indexes %in% svalue(bands_wid_indexes))
-                        #     tmp_arr_ind <- array(data = 0 , dim = length(check_names_indexes))
-                        #     tmp_arr_ind[pos_wid] <- 1
-                        #     GUI.env$temp_wid_bands_indexes <- tmp_arr_ind
-                        #   }
-                        #   if (length(which(check_names_quality != "") > 0)) {    # ? which quality selected ? --> store in GUI.env$temp_wid_bands_quality array
-                        #     pos_wid <- which(check_names_quality %in% svalue(bands_wid_quality))
-                        #     tmp_arr_qual <- array(data = 0 , dim = length(check_names_quality))
-                        #     tmp_arr_qual[pos_wid] <- 1
-                        #     GUI.env$temp_wid_bands_quality <- tmp_arr_qual
-                        #     
-                        #   }
-                        #   
-                        #   dispose(selgroup)			 # close layers selection child widget
-                        #   
-                        # })
-                        # # if Cancel, reset selected layers to previous choice and exit ----
-                        # cancel_but <- gbutton(text = "Cancel", container = bands_group, handler = function(button,...){
-                        # 
-                        #   if (exists("check_wid", where = GUI.env)) {
-                        #     GUI.env$temp_wid_bands <- check_wid
-                        #   }
-                        #   if (exists("check_wid_indexes", where = GUI.env)) {
-                        #     GUI.env$temp_wid_bands_indexes <- check_wid_indexes
-                        #   }
-                        #   if (exists("check_wid_quality", where = GUI.env)) {
-                        #     GUI.env$temp_wid_bands_quality <- check_wid_quality
-                        #   }
-                        #   dispose(selgroup)
-                        # })
+                        accept_but <- gbutton(text = "Accept", container = bands_group, handler = function(button,...){ # On accept, retrieve and save selected layers
+
+                          pos_wid <- which(check_names %in% svalue(bands_wid))   # ? which layers selected ? --> store in GUI.env$temp_wid_bands array
+                          tmp_arr_bands <- array(data = 0 , dim = length(check_names))
+                          tmp_arr_bands[pos_wid] <- 1
+                          GUI.env$temp_wid_bands <- tmp_arr_bands
+                          if (length(which(check_names_indexes != "") > 0)) {    # ? which indexes selected ? --> store in GUI.env$temp_wid_bands_indexes array
+                            pos_wid <- which(check_names_indexes %in% svalue(bands_wid_indexes))
+                            tmp_arr_ind <- array(data = 0 , dim = length(check_names_indexes))
+                            tmp_arr_ind[pos_wid] <- 1
+                            GUI.env$temp_wid_bands_indexes <- tmp_arr_ind
+                          }
+                          if (length(which(check_names_quality != "") > 0)) {    # ? which quality selected ? --> store in GUI.env$temp_wid_bands_quality array
+                            pos_wid <- which(check_names_quality %in% svalue(bands_wid_quality))
+                            tmp_arr_qual <- array(data = 0 , dim = length(check_names_quality))
+                            tmp_arr_qual[pos_wid] <- 1
+                            GUI.env$temp_wid_bands_quality <- tmp_arr_qual
+
+                          }
+
+                          dispose(selgroup)			 # close layers selection child widget
+
+                        })
+                        # if Cancel, reset selected layers to previous choice and exit ----
+                        cancel_but <- gbutton(text = "Cancel", container = bands_group, handler = function(button,...){
+
+                          if (exists("check_wid", where = GUI.env)) {
+                            GUI.env$temp_wid_bands <- check_wid
+                          }
+                          if (exists("check_wid_indexes", where = GUI.env)) {
+                            GUI.env$temp_wid_bands_indexes <- check_wid_indexes
+                          }
+                          if (exists("check_wid_quality", where = GUI.env)) {
+                            GUI.env$temp_wid_bands_quality <- check_wid_quality
+                          }
+                          dispose(selgroup)
+                        })
                         
                         # Widget for "www" button ----
                         addSpring(bands_group)
@@ -633,7 +633,7 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
                             enabled(output_proj4_wid) <- FALSE
                             enabled(change_proj_but) <- TRUE
                             selproj <- ginput(msg = "Please Insert a valid Proj4 string				", parent = NULL, do.buttons = TRUE, size = 800, horizontal = TRUE)
-                            if (!is.na(selproj)) {
+                            if (length(selproj) == 1) {
                               sel_output_proj <- try(CRS(selproj),silent = TRUE)
                               if (class(sel_output_proj) == "try-error") {  # On error, send out a message and reset proj_wid and proj4 wid to previous values
                                 gmessage(sel_output_proj, title = "Proj4 String Not Recognized")
@@ -641,10 +641,10 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
                                 svalue(proj_wid) <- old_sel_projwid
                                 
                               } else {
+                              
                                 old_proj <- svalue(output_proj4_wid)
                                 svalue(output_proj4_wid) <- sel_output_proj
                                 #----- If valid proj4string, and output is a bounding box, recompute the bounding box in output proj coordinates
-                                
                                 bbox_in <- as.numeric(c(svalue(output_ULeast_wid),svalue(output_LRnorth_wid),svalue(output_LReast_wid),svalue(output_ULnorth_wid)))
                                 bbox_out <- reproj_bbox(bbox_in, GUI.env$old_proj4, sel_output_proj@projargs, enlarge = FALSE)
                                 
@@ -662,6 +662,9 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
                                 svalue(output_LReast_wid) <- formatC(bbox_out[1,2], digits = ifelse(units == "dec. degrees",4,1), format = "f")
                                 svalue(output_LRnorth_wid) <- formatC(bbox_out[2,1], digits = ifelse(units == "dec. degrees",4,1), format = "f")
                               }
+                            } else {
+                                svalue(output_proj4_wid) <- GUI.env$old_proj4
+                                svalue(proj_wid) <- old_sel_projwid
                             }
                           }
                         })
@@ -1080,31 +1083,31 @@ MODIStsp_GUI <- function(general_opts, prod_opt_list, scrollWindow, MODIStsp_dir
   
    but_group <- ggroup(container = main_group, horizontal = TRUE)
   # 
-  # start_but <- gbutton(text = "Start Processing", container = but_group, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
-  #   general_opts <- prepare_to_save_options(general_opts, GUI.env)
-  #   if (GUI.env$check_save_opts) {					# If check passed, save previous file and return
-  #     write(RJSONIO::toJSON(general_opts),previous_jsfile)
-  #     # assign("Quit", F, envir = globalenv()) # If "Start", set "Quit to F
-  #     GUI.env$Quit <- FALSE
-  #     # rm(GUI.env$temp_wid_bands, envir = globalenv())
-  #     # rm(GUI.env$temp_wid_bands_indexes, envir = globalenv())
-  #     # rm(GUI.env$temp_wid_bands_indexes, envir = globalenv())
-  #     dispose(main_win)
-  #     
-  #   }
-  # })
-  # 
-  # # On "Quit", exit
-  # quit_but <- gbutton(text = "Quit Program", container = but_group, handler = function(h,...) { # If "Quit", set "Quit to T and exit
-  #   # assign("Quit", TRUE, envir = globalenv())
-  #   GUI.env$Quit <- TRUE
-  #   
-  #   dispose(main_win)
-  #   
-  #   
-  # })
-  # 
-  # addSpring(but_group)
+  start_but <- gbutton(text = "Start Processing", container = but_group, handler = function(h,....) {# If "Start" pressed, retrieve selected values and save in previous file
+    general_opts <- prepare_to_save_options(general_opts, GUI.env)
+    if (GUI.env$check_save_opts) {					# If check passed, save previous file and return
+      write(RJSONIO::toJSON(general_opts),previous_jsfile)
+      # assign("Quit", F, envir = globalenv()) # If "Start", set "Quit to F
+      GUI.env$Quit <- FALSE
+      # rm(GUI.env$temp_wid_bands, envir = globalenv())
+      # rm(GUI.env$temp_wid_bands_indexes, envir = globalenv())
+      # rm(GUI.env$temp_wid_bands_indexes, envir = globalenv())
+      dispose(main_win)
+
+    }
+  })
+
+  # On "Quit", exit
+  quit_but <- gbutton(text = "Quit Program", container = but_group, handler = function(h,...) { # If "Quit", set "Quit to T and exit
+    # assign("Quit", TRUE, envir = globalenv())
+    GUI.env$Quit <- TRUE
+
+    dispose(main_win)
+
+
+  })
+
+  addSpring(but_group)
   
   # On "Load", ask for a old options file and load it --------
   load_but <- gbutton(text = "Load Options", container = but_group, handler = function(h,...){
