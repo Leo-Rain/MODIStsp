@@ -128,7 +128,7 @@ MODIStsp_process <- function(sel_prod, start_date, end_date ,out_folder, out_fol
     # patch not to generate error in indexes and/or quality bands are missing for the selected product
     if (length(indexes_bandnames) == 0) {indexes_bandsel <- integer(0)}
     if (length(quality_bandnames) == 0) {quality_bandsel <- integer(0)}
-    
+    browser()    
     bands_indexes <- matrix(0, nrow = length(bandsel), ncol = length(indexes_bandsel) + length(quality_bandsel),# dummy matrix which associate, to each couple of index or quality band (col) - original band (row),
                             dimnames = list(bandnames,c(indexes_bandnames,quality_bandnames)))								# info on wether that band is required to build that index
     
@@ -158,23 +158,40 @@ MODIStsp_process <- function(sel_prod, start_date, end_date ,out_folder, out_fol
     
     for (yy in start_year:end_year) {
       
-      # Create string representing the dates to be processed
-      if (yy == start_year & yy == end_year) {
-        dates <- c(start_date,end_date)
+      if (!split_years) {
+        # Create string representing the dates to be processed in the case 
+        # of continuous processing
+        
+        if (yy == start_year & yy == end_year) {
+          dates <- c(start_date,end_date)
+        }
+        
+        if (yy == start_year & yy != end_year) {
+          dates <- c(start_date,paste0(as.character(yy),".12.31"))
+        }
+        
+        if (yy != start_year & yy == end_year) {
+          dates <- c(paste0(as.character(yy),".1.1"),end_date)
+        }
+        
+        if (yy != start_year & yy != end_year) {
+          dates <- c(paste0(as.character(yy),".1.1"),paste0(as.character(yy),".12.31"))
+        }
+      } else {
+        # Create string representing the dates to be processed in the case 
+        # of splitted processing
+        
+        start_temp <- ymd(paste(2000,month(ymd(start_date)),day(ymd(start_date)), sep = "-"))
+        
+        if (yy == start_year & yy == end_year) {
+          dates <- c(start_date,end_date)
+        }
+        
+        if (yy == start_year & yy != end_year) {
+          dates <- c(start_date,paste0(as.character(yy),".12.31"))
+        }
+        
       }
-      
-      if (yy == start_year & yy != end_year) {
-        dates <- c(start_date,paste0(as.character(yy),".12.31"))
-      }
-      
-      if (yy != start_year & yy == end_year) {
-        dates <- c(paste0(as.character(yy),".1.1"),end_date)
-      }
-      
-      if (yy != start_year & yy != end_year) {
-        dates <- c(paste0(as.character(yy),".1.1"),paste0(as.character(yy),".12.31"))
-      }
-      
       # Processing status message
       
       mess_text <- paste("Retrieving Files for Year",as.character(yy))
